@@ -8,8 +8,8 @@ class Array
   end
 
   def even_odd
-    self.select { |number| number.even? }.size -
-    self.select { |number| number.odd? }.size
+    even, odd = self.partition { |number| number.even? }
+    result = even - odd
   end
 
   def reverse_strings
@@ -20,3 +20,4 @@ end
 
 arr = [5, 6, 1, 3, 8]
 arr_s = ["my", "power", "is", "growing"]
+arr.even_odd
