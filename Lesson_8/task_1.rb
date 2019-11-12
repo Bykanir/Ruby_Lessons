@@ -1,20 +1,19 @@
 class Array
-  def square(arr)
-    return arr_r = arr.map { |elem| elem * elem }
+  def square
+    self.map { |elem| elem * elem }
   end
 
-  def average(arr)
-    return arr_r = arr.inject(:+).to_f / arr.size
+  def average
+    self.inject(:+).to_f / self.size
   end
 
-  def even_odd(arr)
-    arr_even = arr.select { |number| number.even? }
-    arr_odd = arr.select { |number| number.odd? }
-    return arr_even.size - arr_odd.size
+  def even_odd
+    self.select { |number| number.even? }.size -
+    self.select { |number| number.odd? }.size
   end
 
-  def reverse_strings(arr)
-    return arr_reverse = arr_s.map { |word| word.reverse }
+  def reverse_strings
+    self.map { |word| word.reverse }
   end
 
 end
