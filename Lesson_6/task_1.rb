@@ -1,11 +1,11 @@
+require 'date'
+
 request = gets.chomp
 
 def ask(string)
-  return puts "invalid request" if string.class != String
+  return unless string.is_a?(String)
 
-  days_for_year = Time.now.year
-
-  if days_for_year % 4 == 0 && days_for_year % 100 != 0 || days_for_year % 400 == 0
+  if Date.leap?(Time.now.year)
     days_for_year = 366
   else
     days_for_year = 365
@@ -13,7 +13,7 @@ def ask(string)
 
   case string
   when "time"
-    puts "#{Time.now.hour}:#{Time.now.min}"
+    puts Time.now.strftime "%H:%M"
   when "date"
     puts Time.now.strftime "%e %B,%Y"
   when "day"
@@ -21,7 +21,7 @@ def ask(string)
   when "remaining days"
     puts days_for_year - Time.now.strftime("%j").to_i
   when "remaining weeks"
-    puts (days_for_year - Time.now.strftime("%j").to_i) / 7
+    puts 53 - Time.now.strftime("%W").to_i
   end
 end
 
