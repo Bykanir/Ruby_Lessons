@@ -1,13 +1,13 @@
 class Station
-  def initilize
-    @title
+  def initialize(title)
+    @title = title
   end
 end
 
 class Route
-  def initilize
-    @first_station
-    @last_station
+  def initialize(first_station, last_station)
+    @first_station = first_station
+    @last_station = last_station
   end
 
   def list_station
@@ -16,11 +16,11 @@ class Route
 end
 
 class Train
-  def initilize
-    @number
-    @type
-    @carriage_count
-    @speed
+  def initialize(number, type, carriage_count)
+    @number = number
+    @type = type
+    @carriage_count = carriage_count
+    @speed = 0
   end
 
   def speed_gain
@@ -28,7 +28,7 @@ class Train
   end
 
   def current_speed
-    return @speed
+    @speed
   end
 
   def brake
@@ -36,7 +36,7 @@ class Train
   end
 
   def carriage_count
-    return @carriage_count
+    @carriage_count
   end
 
   def unhooking_carriage
