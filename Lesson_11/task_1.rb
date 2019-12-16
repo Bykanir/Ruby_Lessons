@@ -1,6 +1,6 @@
 class Station
-  def initialize(title)
-    @title = title
+  def initialize(name)
+    @name = name
   end
 end
 
@@ -10,8 +10,9 @@ class Route
     @last_station = last_station
   end
 
-  def list_station
-    return @first_station, @last_station
+  def stations
+    stations = []
+    stations.push(@first_station, @last_station)
   end
 end
 
@@ -24,7 +25,7 @@ class Train
   end
 
   def speed_gain
-    @speed = 20
+    @speed += 20
   end
 
   def current_speed
@@ -40,10 +41,10 @@ class Train
   end
 
   def unhooking_carriage
-    @carriage_count - 1 if @speed == 0
+    @carriage_count -= 1 if @speed == 0
   end
 
   def trailer_carriage
-    @carriage_count + 1 if @speed == 0
+    @carriage_count += 1 if @speed == 0
   end
 end
