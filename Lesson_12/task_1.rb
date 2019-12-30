@@ -12,7 +12,7 @@ class Station
   end
 
   def send_train(train)     # отправление поездов
-    @trains.delete(train)
+    trains.delete(train)
   end
 end
 
@@ -39,38 +39,39 @@ class Train
 
   attr_accessor :speed, :carriage_count
   attr_accessor :current_station
+  attr_reader :next_station, :last_station
 
   def initialize(number, type)
     @number = number
     @type = type
     @carriage_count = 0
     @speed = 0
-    @index_current_station = 0
+    @current_station_index = 0
   end
 
   def accept_route(route)       # метод добавление маршрута
-    @route = route.stations       # добавление маршрута
-    @current_station = @route[@index_current_station]   # постановка этого поезда на первую станцию
+    @route = route      # добавление маршрута
+    @current_station = @route.stations[0]   # постановка этого поезда на первую станцию
     @current_station.add_trains(self)     # добавление этого поезда в список поездов станции
   end
 
   def move_forward      # отправление на следующую станцию маршрута
     @current_station.send_train(self)
-    @current_station = @route[@index_current_station += 1]
+    @current_station = @route.stations[@current_station_index += 1]
     @current_station.add_trains(self)
   end
 
   def move_backward     # отправление на предыдущую станцию маршрута
     @current_station.send_train(self)
-    @current_station = @route[@index_current_station -= 1]
+    @current_station = @route.stations[@current_station_index -= 1]
     @current_station.add_trains(self)
   end
 
-  def next_station
-    @route[@index_current_station += 1]
+  def next_station          # есть геттер, может нужно вывести переменную в инициализацию?
+    @route.stations[@current_station_index += 1]
   end
 
-  def last_station
-    @route[@index_current_station -= 1]
+  def last_station          # смореть на next_station
+    @route.stations[@current_station_index -= 1]
   end
 end
