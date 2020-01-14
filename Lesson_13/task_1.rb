@@ -7,7 +7,7 @@ class Station
     @trains = []
   end
 
-  def add_trains(train)     # добавление поездов на станцию
+  def add_train(train)     # добавление поездов на станцию
     trains << train
   end
 
@@ -18,7 +18,7 @@ end
 
 class Route
 
-  attr_reader :stations     # геттер списка поездов
+  attr_reader :stations, :first_station, :last_station     # геттер списка поездов
 
   def initialize(first_station, last_station)
     @first_station = first_station
@@ -27,19 +27,18 @@ class Route
   end
 
   def add_station(station)      # добавление промежуточные станции в маршрут
-    @stations.insert(1, station)
+    stations.insert(1, station)
   end
 
   def delete_station(station)     # удаление промежуточной станции
-    @stations.delete(station) if station != @first_station && station != @last_station
+    stations.delete(station) if station != first_station && station != last_station
   end
 end
 
 class PassengerTrain
 
-  attr_accessor :speed
-  attr_accessor :current_station
-  attr_reader :next_station, :last_station, :carriages
+  attr_accessor :speed, :current_station
+  attr_reader :carriages, :route
 
   def initialize(number)
     @number = number
@@ -51,39 +50,42 @@ class PassengerTrain
   def accept_route(route)       # метод добавление маршрута
     @route = route      # добавление маршрута
     @current_station = @route.stations[0]   # постановка этого поезда на первую станцию
-    @current_station.add_trains(self)     # добавление этого поезда в список поездов станции
+    @current_station.add_train(self)     # добавление этого поезда в список поездов станции
   end
 
   def move_forward      # отправление на следующую станцию маршрута
-    @current_station.send_train(self)
-    @current_station = @route.stations[@current_station_index += 1]
-    @current_station.add_trains(self)
+    move(next_station)
   end
 
   def move_backward     # отправление на предыдущую станцию маршрута
-    @current_station.send_train(self)
-    @current_station = @route.stations[@current_station_index -= 1]
-    @current_station.add_trains(self)
+    move(previous_station)
   end
 
   def next_station          # есть геттер, может нужно вывести переменную в инициализацию?
-    @route.stations[@current_station_index += 1]
+    @route.stations[@current_station_index + 1]
   end
 
-  def last_station          # смореть на next_station
-    @route.stations[@current_station_index -= 1]
+  def previous_station          # смореть на next_station
+    @route.stations[@current_station_index - 1]
   end
 
   def add_carriage(carriage)
-    carriages << carriage if carriage.class == PassengerCarriage
+    carriages << carriage if carriage.is_a?(PassengerCarriage)
+  end
+
+  private
+
+  def move(station)             # приватный метод перемещения поезда
+    @current_station.send_train(self)
+    self.current_station = station
+    @current_station.add_train(self)
   end
 end
 
 class CargoTrain
 
-  attr_accessor :speed
-  attr_accessor :current_station
-  attr_reader :next_station, :last_station, :carriages
+  attr_accessor :speed, :current_station
+  attr_reader :carriages, :route
 
   def initialize(number)
     @number = number
@@ -95,31 +97,35 @@ class CargoTrain
   def accept_route(route)       # метод добавление маршрута
     @route = route      # добавление маршрута
     @current_station = @route.stations[0]   # постановка этого поезда на первую станцию
-    @current_station.add_trains(self)     # добавление этого поезда в список поездов станции
+    @current_station.add_train(self)     # добавление этого поезда в список поездов станции
   end
 
   def move_forward      # отправление на следующую станцию маршрута
-    @current_station.send_train(self)
-    @current_station = @route.stations[@current_station_index += 1]
-    @current_station.add_trains(self)
+    move(next_station)
   end
 
   def move_backward     # отправление на предыдущую станцию маршрута
-    @current_station.send_train(self)
-    @current_station = @route.stations[@current_station_index -= 1]
-    @current_station.add_trains(self)
+    move(previous_station)
   end
 
   def next_station          # есть геттер, может нужно вывести переменную в инициализацию?
-    @route.stations[@current_station_index += 1]
+    @route.stations[@current_station_index + 1]
   end
 
-  def last_station          # смореть на next_station
-    @route.stations[@current_station_index -= 1]
+  def previous_station          # смореть на next_station
+    @route.stations[@current_station_index - 1]
   end
 
   def add_carriage(carriage)
-    carriages << carriage if carriage.class == CargoCarriage
+    carriages << carriage if carriage.is_a?(CargoCarriage)
+  end
+
+  private
+
+  def move(station)         # приватный метод перемещения поезда
+    @current_station.send_train(self)
+    self.current_station = station
+    @current_station.add_train(self)
   end
 end
 
