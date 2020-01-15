@@ -43,7 +43,6 @@ class PassengerTrain
   def initialize(number)
     @number = number
     @speed = 0
-    @current_station_index = 0
     @carriages = []
   end
 
@@ -62,11 +61,11 @@ class PassengerTrain
   end
 
   def next_station          # есть геттер, может нужно вывести переменную в инициализацию?
-    @route.stations[@current_station_index + 1]
+    @route.stations[+ 1]
   end
 
   def previous_station          # смореть на next_station
-    @route.stations[@current_station_index - 1]
+    @route.stations[- 1]
   end
 
   def add_carriage(carriage)
@@ -90,7 +89,6 @@ class CargoTrain
   def initialize(number)
     @number = number
     @speed = 0
-    @current_station_index = 0
     @carriages = []
   end
 
@@ -109,11 +107,11 @@ class CargoTrain
   end
 
   def next_station          # есть геттер, может нужно вывести переменную в инициализацию?
-    @route.stations[@current_station_index + 1]
+    @route.stations[+ 1]
   end
 
   def previous_station          # смореть на next_station
-    @route.stations[@current_station_index - 1]
+    @route.stations[- 1]
   end
 
   def add_carriage(carriage)
