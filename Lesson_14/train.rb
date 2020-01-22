@@ -1,9 +1,6 @@
-load 'Station.rb'
-load 'Route.rb'
-
 class Train
 
-  attr_accessor :speed, :current_station
+  attr_accessor :speed, :index_current_station
   attr_reader :carriages, :route, :number
 
   def initialize(number)
@@ -14,8 +11,8 @@ class Train
 
   def accept_route(route)       # метод добавление маршрута
     @route = route      # добавление маршрута
-    @current_station = route.stations[0]   # постановка этого поезда на первую станцию
-    current_station.add_train(self)     # добавление этого поезда в список поездов станции
+    @index_current_station = 0   # постановка этого поезда на первую станцию
+    route.stations[index_current_station].add_train(self) # добавление этого поезда в список поездов станции
   end
 
   def move_forward      # отправление на следующую станцию маршрута
@@ -27,26 +24,26 @@ class Train
   end
 
   def next_station
-    route.stations[+ 1]
+    index_current_station + 1
   end
 
   def previous_station
-    route.stations[- 1]
+    index_current_station - 1
   end
 
   def add_carriage(carriage)    # добавление вагона
     carriages << carriage
   end
 
-  def disconnect_carriage(carriage)       # удаление вагона
+  def delete_carriage(carriage)       # удаление вагона
     carriages.delete(carriage)
   end
 
   private
 
-  def move(station)             # приватный метод перемещения поезда
-    self.current_station.send_train(self)
-    self.current_station = station
-    station.add_train(self)
+  def move(index_station)             # приватный метод перемещения поезда
+    self.route.stations[index_current_station].send_train(self)
+    self.index_current_station = index_station
+    route.stations[index_current_station].add_train(self)
   end
 end

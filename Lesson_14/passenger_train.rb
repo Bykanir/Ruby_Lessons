@@ -1,5 +1,3 @@
-load 'Train.rb'
-
 class PassengerTrain < Train
 
   def add_carriage(carriage)

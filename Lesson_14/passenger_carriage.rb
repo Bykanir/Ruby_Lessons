@@ -1,5 +1,3 @@
-load 'Carriage.rb'
-
 class PassengerCarriage < Carriage
 
   def initialize(number, seats)

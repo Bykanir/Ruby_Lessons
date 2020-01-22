@@ -1,5 +1,3 @@
-load 'Station.rb'
-
 class Route
 
   attr_reader :stations, :first_station, :last_station, :name     # геттер списка станций
