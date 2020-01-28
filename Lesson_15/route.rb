@@ -15,7 +15,7 @@ class Route
     @first_station = first_station
     @last_station = last_station
     @stations = [first_station, last_station]
-    @@routes.store(name, stations)
+    @@routes.store(self, stations)
   end
 
   def add_station(station)      # добавление промежуточные станции в маршрут

@@ -6,10 +6,8 @@ class Train
   @@trains = []
 
   class << self
-    def find(number_enter)
-      @@trains.detect do |train|
-        train.number == number_enter
-      end
+    def find(number)
+      @@trains.detect { |train|  train.number == number }
     end
   end
 
