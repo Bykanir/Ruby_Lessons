@@ -26,7 +26,7 @@ loop do
   when "3"
     app.create_route
   when "4"
-    app.edit_station_route
+    app.edit_route
   when "5"
     app.route_assignment
   when "6"
@@ -36,7 +36,7 @@ loop do
   when "8"
     app.move_train
   when "9"
-    app.view_list_station_and_train
+    app.list_station_and_train
   when "0"
     puts "Good Bay!"
     break

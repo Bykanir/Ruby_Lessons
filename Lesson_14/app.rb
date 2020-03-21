@@ -13,9 +13,7 @@ class App
 
   def create_station                             # создание станции
     puts "Enter station name"
-    station_name = gets.chomp
-    station_name = Station.new(station_name)
-    stations.push(station_name)
+    stations << Station.new(gets.chomp)
   end
 
   def create_train                               # создание поезда
@@ -27,11 +25,9 @@ class App
     puts "Which number train"
     number_train = gets.chomp
     if type_train == "1"
-      number_train = PassengerTrain.new(number_train)
-      trains.push(number_train)
+      trains << PassengerTrain.new(number_train)
     elsif type_train == "2"
-      number_train = CargoTrain.new(number_train)
-      trains.push(number_train)
+      trains << CargoTrain.new(number_train)
     end
   end
 
@@ -44,27 +40,39 @@ class App
     last_station_enter = gets.chomp
     last_station = station_search(last_station_enter)
 
-    puts "Enter name route"
-    route_name = gets.chomp
+
+    route_name = "#{first_station.name} - #{last_station.name}"
     route_name = Route.new(route_name, first_station, last_station)
     routes.push(route_name)
+
+    puts "Route #{route_name.name} create"
+
   end
 
-  def edit_station_route                         # редактирование маршрута
+  def edit_route                         # редактирование маршрута
+    puts "List of existing routes"
+    routes.each { |route| puts route.name }
+    puts "----------------------"
     puts "Enter edit route"
-    route_enter = gets.chomp
-    route_enter = route_search(route_enter)
+    route = gets.chomp
+    route = route_search(route)
 
     puts "Add or remove?"
     puts "1 - Add"
     puts "2 - Remove"
     enter = gets.chomp
     if enter == "1"                              # добавление станции в маршрут
+      puts "List of existing stations"
+      stations.each { |station| puts station.name }
+      puts "-------------------------"
       puts "Which station to add?"
       station_add = gets.chomp
       station_add = station_search(station_add)
       route.add_station(station_add)
     elsif enter == "2"                          # удаления станции из машрута
+      puts "List of stations in the route"
+      route.stations.each { |station| puts station.name }
+      puts "-------------------------"
       puts "Which station to delete?"
       station_delete = gets.chomp
       station_delete = station_search(station_delete)
@@ -73,16 +81,21 @@ class App
   end
 
   def route_assignment                          # назначение маршрута поезду
+
     puts "Which number train to set the route?"
-    train_enter = gets.chomp
-    train_enter = train_search(train_enter)
+    puts "List of trains"
+    trains.each { |train| puts train.number }
+    puts "-------------------------"
+    train_number = gets.chomp
+    train_number = train_search(train_number)
 
     puts "Which route to assign?"
-    route_enter = gets.chomp
-    route = routes.detect do |route_obj|
-      route_obj.name == route_enter
-    end
-    train_enter.accept_route(route)
+    puts "List of routes"
+    routes.each { |route| puts route.name }
+    puts "-------------------------"
+    route_number = gets.chomp
+    route = route_search(route_number)
+    train_number.accept_route(route)
   end
 
   def create_carriage                           # создание вагона
@@ -116,16 +129,24 @@ class App
     puts "2 - Disconnect"
     enter = gets.chomp
     if enter == "1"                              # добавление вагона к поезду
-      puts "Which carriage to add?"
-      carriage_add = gets.chomp
-      carriage_add = carriage_search(carriage_add)
-      train_enter.add_carriage(carriage_add)
+      add_carriage
     elsif enter == "2"                          # отцепка вагона от поезда
-      puts "Which carriage to disconnect?"
-      carriage_delete = gets.chomp
-      carriage_delete = carriage_search(carriage_delete)
-      train_enter.delete_carriage(carriage_delete)
+      delete_carriage
     end
+  end
+
+  def add_carriage
+    puts "Which carriage to add?"
+    carriage_add = gets.chomp
+    carriage_add = carriage_search(carriage_add)
+    train_enter.add_carriage(carriage_add)
+  end
+
+  def delete_carriage
+    puts "Which carriage to disconnect?"
+    carriage_delete = gets.chomp
+    carriage_delete = carriage_search(carriage_delete)
+    train_enter.delete_carriage(carriage_delete)
   end
 
   def move_train                                # движение поезда по станциям
@@ -144,19 +165,27 @@ class App
     end
   end
 
-  def view_list_station_and_train               # посмотр списка станций и поездов на станции
+  def list_station_and_train               # посмотр списка станций и поездов на станции
     puts "Enter number"
     puts "1 - Station list"
     puts "2 - Station train list "
     enter = gets.chomp
     if enter == "1"
-      stations.each { |station| puts station.name }
+      list_station
     elsif enter == "2"
-      puts "Which station"
-      station_enter = gets.chomp
-      station_enter = station_search(station_enter)
-      station_enter.trains.each { |train| puts train.number }
+      list_train
     end
+  end
+
+  def list_station
+    stations.each { |station| puts station.name }
+  end
+
+  def list_train
+    puts "Which station"
+    station_enter = gets.chomp
+    station_enter = station_search(station_enter)
+    station_enter.trains.each { |train| puts train.number }
   end
 
   private
