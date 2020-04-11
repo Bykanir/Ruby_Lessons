@@ -10,8 +10,8 @@ class Route
     end
   end
 
-  def initialize(name, first_station, last_station)
-    @name = name
+  def initialize(first_station, last_station)
+    @name = "#{first_station.name} - #{last_station.name}"
     @first_station = first_station
     @last_station = last_station
     @stations = [first_station, last_station]

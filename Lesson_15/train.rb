@@ -15,7 +15,7 @@ class Train
     @number = number
     @speed = 0
     @carriages = []
-    @@trains.push(self)
+    @@trains << self
   end
 
   def accept_route(route)       # метод добавление маршрута

@@ -1,6 +1,6 @@
 class Station
 
-  attr_reader :trains, :name    # геттер списка поездов
+  attr_reader :trains, :name     # геттер списка поездов
 
   @@stations = []
 
