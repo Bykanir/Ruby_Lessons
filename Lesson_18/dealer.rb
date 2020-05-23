@@ -1,18 +1,9 @@
-require_relative 'requireable.rb'
+require_relative 'player.rb'
 
-class Dealer
-
-  attr_reader :cards
-  attr_accessor :point
-
-  def initialize
-    @cards = {}
-    @point = 0
+class Dealer < Player
+  def hiding_cards
+    hiding = []
+    @cards.size.times { hiding << '**'}
+    p hiding
   end
-
-  def getting_card(cards)
-    card = cards.keys.sample
-    @cards.store(card, cards[card]) if @cards.size < 3
-  end
-
 end

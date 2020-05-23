@@ -1,43 +1,37 @@
 require_relative 'requireable.rb'
 
-app = App.new
-gamer = Gamer.new
-dealer = Dealer.new
+loop do
+  app = App.new
+  gamer = Gamer.new
+  dealer = Dealer.new
+  deck = Deck.new
 
-puts "Hello"
-app.get_name(gamer)
+  puts 'Hello! Welcome to the game!'
+  gamer.get_name
 
-puts "Give out cards"
-app.start_game(gamer)
-app.score(gamer)
-puts "Your cards"
-app.output_card(gamer)
-puts "Your points"
-app.output_score(gamer)
+  puts 'Give out cards'
+  app.start_game(gamer, dealer, deck)
+  puts 'Your cards'
+  p gamer.cards
+  puts 'Your points'
+  p gamer.points
+  puts 'Dealer cards'
+  dealer.hiding_cards
+  random = rand(1..2)
 
+  if random == 1
+    app.first_development(gamer, dealer, deck)
+  elsif random == 2
+    app.second_development(gamer, dealer, deck)
+  end
 
-app.start_game(dealer)
-app.score(dealer)
-puts "Cards dealer ** **"
-
-random = rand(1..2)
-
-if random == 1
-  app.dealer_move(dealer)
-
-  app.gamer_move_annotation                           #
+  puts "Want to play more?"
+  puts "1 - Play!"
+  puts "2 - That's enough!"
   choice = gets.chomp.to_i
-  return app.win(gamer, dealer) if choice == 3
-  app.gamer_choice(gamer, choice)
-
-elsif random == 2
-  app.gamer_move_annotation
-  choice = gets.chomp.to_i
-  return app.win(gamer, dealer) if choice == 3
-  app.gamer_choice(gamer, choice)
-
-  app.dealer_move(dealer)
-
+  if choice == 1
+    next
+  elsif choice == 2
+    break
+  end
 end
-
-app.win(gamer, dealer)
