@@ -9,20 +9,13 @@ class Player
   end
 
   def score                   # подсчет очков
-    if self.cards.any? do |card|
-      card == 'A+' || card == 'A<>' || card == 'A^' || card == 'A<3'
-    end
-      score_ace(self)
-    else
-      self.points
-    end
-  end
-
-  protected
-
-  def score_ace(player)
-    if player.points > 21
-      player.points -= 10
+    self.points = 0
+    self.cards.each do |card|
+      if card.include?('A')
+        self.points < 11 ? self.points += 11 : self.points += 1
+      else
+        card.to_i == 0 ? self.points += 10 : self.points += card.to_i
+      end
     end
   end
 end

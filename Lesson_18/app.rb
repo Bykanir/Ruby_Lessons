@@ -1,73 +1,99 @@
+require_relative 'requireable.rb'
+
 class App
 
-  def start_game(gamer, dealer, deck)                     #раздача карт игроку
-    deck.get_card(gamer)
-    deck.get_card(gamer)
+  attr_reader :gamer, :dealer, :deck, :users
 
-    deck.get_card(dealer)
-    deck.get_card(dealer)
+  def initialize
+    @gamer = Gamer.new
+    @dealer = Dealer.new
+    @deck = Deck.new
+    @users = [gamer, dealer]
   end
 
+  def gamer_get_name
+    gamer.get_name
+  end
+
+  def gamer_set_cards
+    puts gamer.cards
+  end
+
+  def gamer_set_points
+    puts gamer.points
+  end
+
+  def dealer_set_cards
+    dealer.hiding_cards
+  end
+
+  def start_game                    #раздача карт игроку
+    users.each do |user|
+      2.times { deck.get_card(user) }
+    end
+    users.each { |user| user.score }
+  end
+
+  def first_case
+    dealer_move
+
+    gamer_move_annotation_first
+    choice = gets.chomp.to_i
+    gamer_move_first_case(choice)
+
+    end_game
+  end
 
   def gamer_move_annotation_first
-    puts "You move!"
-    puts "What are we doing?"
-    puts "1 - Add card"
-    puts "2 - Open cards"
+    annotation = ['You move!',
+                  'What are we doing?',
+                  '1 - Add card',
+                  '2 - Open cards']
+    annotation.each { |ann| puts ann}
   end
 
-  def gamer_move_first(gamer, move, deck, dealer)             #ход игрока
-    if move == 1
+  def gamer_move_first_case(choice)                      #ход игрока
+    if choice == 1
       deck.get_card(gamer)
       puts "Your cards"
-      p gamer.cards
-    elsif move == 2
+      gamer_set_cards
+    elsif choice == 2
       return
     end
   end
 
-  def first_development(gamer, dealer, deck)
-    dealer_move(dealer, deck)
+  def second_case
+    gamer_move_annotation_second
+    choice = gets.chomp.to_i
+    gamer_move_second_case(choice)
 
-    gamer_move_annotation_first
-    move = gets.chomp.to_i
-    gamer_move_first(gamer, move, deck, dealer)
+    return end_game if choice == 3
 
-    win(gamer, dealer)
+    dealer_move
+
+    end_game
   end
 
   def gamer_move_annotation_second
-    puts "You move!"
-    puts "What are we doing?"
-    puts "1 - Skip move"
-    puts "2 - Add card"
-    puts "3 - Open cards"
+    annotation = ['You move!',
+                  'What are we doing?',
+                  '1 - Skip move',
+                  '2 - Add card',
+                  '3 - Open cards']
+    annotation.each { |ann| puts ann}
   end
 
-  def gamer_move_second(gamer, move, deck, dealer)             #ход игрока
-    if move == 1
+  def gamer_move_second_case(choice)            #ход игрока
+    if choice == 1
       puts "Pass"
-    elsif move == 2
+    elsif choice == 2
       deck.get_card(gamer)
       puts "Your cards"
-      p gamer.cards
+      gamer_set_cards
     end
   end
 
-  def second_development(gamer, dealer, deck)
-    gamer_move_annotation_second
-    move = gets.chomp.to_i
-    gamer_move_second(gamer, move, deck, dealer)
-
-    return win(gamer, dealer) if move == 3
-
-    dealer_move(dealer, deck)
-
-    win(gamer, dealer)
-  end
-
-
-  def dealer_move(dealer, deck)                    #ход дилера
+  def dealer_move                 #ход дилера
     puts "Dealer move"
     if dealer.points < 17
       puts "Dealer draws card"
@@ -79,20 +105,19 @@ class App
     end
   end
 
-  def win(gamer, dealer)
-    gamer.score
-    dealer.score
-    all_out(gamer, dealer)
+  def end_game
+    users.each { |user| user.score }
+    reveal_cards
 
     return puts "Dealer won!" if gamer.points > 21
     return puts "#{gamer.name} won!" if dealer.points > 21
 
-    winner(gamer, dealer)
+    winner
   end
 
   private
 
-  def winner(gamer, dealer)
+  def winner
     if gamer.points > dealer.points
       puts "#{gamer.name} won!"
     elsif gamer.points < dealer.points
@@ -102,16 +127,17 @@ class App
     end
   end
 
-  def all_out(gamer, dealer)        #вывод всех карт и очков
-    puts "Open all cards"
-    puts "Your cards"
-    p gamer.cards
-    puts "Your points"
-    p gamer.points
-
-    puts "Dealer cards"
-    p dealer.cards
-    puts "Dealer points"
-    p dealer.points
+  def reveal_cards            #вывод всех карт и очков
+    annotation = ['Open all cards',
+                  'Your cards',
+                  gamer.cards,
+                  'Your points',
+                  gamer.points,
+                  'Dealer cards',
+                  dealer.cards,
+                  'Dealer points',
+                  dealer.points
+                ]
+    annotation.each { |ann| puts ann}
   end
 end

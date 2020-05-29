@@ -1,28 +1,24 @@
-require_relative 'requireable.rb'
+require_relative 'app.rb'
 
 loop do
   app = App.new
-  gamer = Gamer.new
-  dealer = Dealer.new
-  deck = Deck.new
-
   puts 'Hello! Welcome to the game!'
-  gamer.get_name
+  app.gamer_get_name
 
   puts 'Give out cards'
-  app.start_game(gamer, dealer, deck)
+  app.start_game
   puts 'Your cards'
-  p gamer.cards
+  app.gamer_set_cards
   puts 'Your points'
-  p gamer.points
+  app.gamer_set_points
   puts 'Dealer cards'
-  dealer.hiding_cards
+  app.dealer_set_cards
   random = rand(1..2)
 
   if random == 1
-    app.first_development(gamer, dealer, deck)
+    app.first_case
   elsif random == 2
-    app.second_development(gamer, dealer, deck)
+    app.second_case
   end
 
   puts "Want to play more?"
