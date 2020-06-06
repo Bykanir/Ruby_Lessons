@@ -3,179 +3,142 @@
 require_relative 'requireable.rb'
 
 class App
-  attr_reader :cards
+  attr_reader :gamer, :dealer, :deck, :users
 
   def initialize
-    # + clubs
-    # <3  hearts
-    # ^  spades
-    # <> diamonds
-    # hash all cards and points
-    @cards = { '2+': 2,
-               '3+': 3,
-               '4+': 4,
-               '6+': 6,
-               '7+': 7,
-               '8+': 8,
-               '5+': 5,
-               '9+': 9,
-               '10+': 10,
-               'J+': 10,
-               'Q+': 10,
-               'K+': 10,
-               'A+': 11,
-
-               '2<3': 2,
-               '3<3': 3,
-               '4<3': 4,
-               '5<3': 5,
-               '6<3': 6,
-               '7<3': 7,
-               '8<3': 8,
-               '9<3': 9,
-               '10<3': 10,
-               'J<3': 10,
-               'Q<3': 10,
-               'K<3': 10,
-               'A<3': 11,
-
-               '2^': 2,
-               '3^': 3,
-               '4^': 4,
-               '5^': 5,
-               '6^': 6,
-               '7^': 7,
-               '8^': 8,
-               '9^': 9,
-               '10^': 10,
-               'J^': 10,
-               'Q^': 10,
-               'K^': 10,
-               'A^': 11,
-
-               '2<>': 2,
-               '3<>': 3,
-               '4<>': 4,
-               '5<>': 5,
-               '6<>': 6,
-               '7<>': 7,
-               '8<>': 8,
-               '9<>': 9,
-               '10<>': 10,
-               'J<>': 10,
-               'Q<>': 10,
-               'K<>': 10,
-               'A<>': 11 }
+    @gamer = Gamer.new
+    @dealer = Dealer.new
+    @deck = Deck.new
+    @users = [gamer, dealer]
   end
 
-  def score(gamer)
-    gamer.point = 0
-    if gamer.cards.include?(:"A<>") || gamer.cards.include?(:"A^") || gamer.cards.include?(:"A<3") || gamer.cards.include?(:"A+")
-      score_ace(gamer)
-    else
-      score_common(gamer)
+  def gamer_get_name
+    gamer.name?
+  end
+
+  def gamer_set_cards
+    print gamer.cards
+    puts
+  end
+
+  def gamer_set_points
+    puts gamer.points
+  end
+
+  def dealer_set_cards
+    dealer.hiding_cards
+  end
+
+  def start_game
+    users.each do |user|
+      2.times { deck.get_card(user) }
     end
+    users.each(&:score)
   end
 
-  def get_name(gamer)
-    puts 'What is you name?'
-    gamer.enter_name
+  def first_case
+    dealer_move
+
+    gamer_move_annotation_first
+    choice = gets.chomp.to_i
+    gamer_move_first_case(choice)
+
+    end_game
   end
 
-  def output_card(gamer)
-    puts gamer.cards.keys
+  def gamer_move_annotation_first
+    annotation = ['You move!',
+                  'What are we doing?',
+                  '1 - Add card',
+                  '2 - Open cards']
+    annotation.each { |ann| puts ann }
   end
 
-  def output_score(gamer)
-    puts gamer.point
-  end
-
-  def get_card(gamer)
-    gamer.getting_card(@cards)
-    delete_card(gamer.cards.keys[-1])
-  end
-
-  def start_game(gamer)
-    get_card(gamer)
-    get_card(gamer)
-  end
-
-  def gamer_choice(gamer, choice)
-    case choice
-    when 1
-      puts 'Pass'
-    when 2
-      get_card(gamer)
+  def gamer_move_first_case(choice)
+    if choice == 1
+      deck.get_card(gamer)
       puts 'Your cards'
-      output_card(gamer)
+      gamer_set_cards
+    elsif choice == 2
+      nil
     end
   end
 
-  def gamer_move_annotation
-    puts 'You move!'
-    puts 'What are we doing?'
-    puts '1 - Skip move'
-    puts '2 - Add card'
-    puts '3 - Open cards'
+  def second_case
+    gamer_move_annotation_second
+    choice = gets.chomp.to_i
+    gamer_move_second_case(choice)
+
+    return end_game if choice == 3
+
+    dealer_move
+
+    end_game
   end
 
-  def dealer_move(dealer)
+  def gamer_move_annotation_second
+    annotation = ['You move!',
+                  'What are we doing?',
+                  '1 - Skip move',
+                  '2 - Add card',
+                  '3 - Open cards']
+    annotation.each { |ann| puts ann }
+  end
+
+  def gamer_move_second_case(choice)
+    if choice == 1
+      puts 'Pass'
+    elsif choice == 2
+      deck.get_card(gamer)
+      puts 'Your cards'
+      gamer_set_cards
+    end
+  end
+
+  def dealer_move
     puts 'Dealer move'
-    if dealer.point < 17
+    if dealer.points < 17
       puts 'Dealer draws card'
-      get_card(dealer)
-      puts 'Cards dealer ** ** **'
+      deck.get_card(dealer)
+      puts 'Dealer cards'
+      dealer.hiding_cards
     else
       puts 'Dealer pass'
     end
   end
 
-  def win(gamer, dealer)
-    score(gamer)
-    score(dealer)
-    all_out(gamer, dealer)
+  def end_game
+    users.each(&:score)
+    reveal_cards
 
-    return puts 'Dealer won!' if gamer.point > 21
-    return puts "#{gamer.name} won!" if dealer.point > 21
+    return puts 'Dealer won!' if gamer.points > 21
+    return puts "#{gamer.name} won!" if dealer.points > 21
 
-    condition_win(gamer, dealer)
+    winner
   end
 
   private
 
-  def condition_win(gamer, dealer)
-    if gamer.point > dealer.point
+  def winner
+    if gamer.points > dealer.points
       puts "#{gamer.name} won!"
-    elsif gamer.point < dealer.point
+    elsif gamer.points < dealer.points
       puts 'Dealer won!'
     else
       puts 'Draw!'
     end
   end
 
-  def all_out(gamer, dealer)
-    puts 'Open all cards'
-    puts 'Your cards'
-    output_card(gamer)
-    puts 'Your points'
-    output_score(gamer)
-
-    puts 'Dealer cards'
-    output_card(dealer)
-    puts 'Dealer points'
-    output_score(dealer)
-  end
-
-  def delete_card(card)
-    @cards.delete(card)
-  end
-
-  def score_ace(gamer)
-    score_common(gamer)
-    gamer.point -= 10 if gamer.point > 21
-  end
-
-  def score_common(gamer)
-    gamer.cards.each { |_key, value| gamer.point += value }
+  def reveal_cards
+    annotation = ['Open all cards',
+                  'Your cards',
+                  gamer.cards,
+                  'Your points',
+                  gamer.points,
+                  'Dealer cards',
+                  dealer.cards,
+                  'Dealer points',
+                  dealer.points]
+    annotation.each { |ann| puts ann }
   end
 end

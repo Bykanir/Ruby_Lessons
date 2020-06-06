@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
-require_relative 'requireable.rb'
+require_relative 'player.rb'
 
-class Gamer
-  attr_reader :cards, :name
-  attr_accessor :point
+class Gamer < Player
+  attr_reader :name
 
-  def initialize
-    @cards = {}
-    @point = 0
-  end
-
-  def enter_name
+  def name?
+    puts 'What is you name?'
     name = gets.chomp
     @name = name
-  end
-
-  def getting_card(cards)
-    card = cards.keys.sample
-    @cards.store(card, cards[card]) if @cards.size < 3
   end
 end
