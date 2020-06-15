@@ -1,5 +1,8 @@
-class Route
+require_relative 'validator.rb'
 
+class Route
+  include Validator
+  
   attr_reader :stations, :first_station, :last_station, :name     # геттер списка станций
 
   def initialize(first_station, last_station)
@@ -7,6 +10,7 @@ class Route
     @first_station = first_station
     @last_station = last_station
     @stations = [first_station, last_station]
+    name_valid?(name)
   end
 
   def add_station(station)      # добавление промежуточные станции в маршрут

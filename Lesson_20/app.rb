@@ -1,7 +1,7 @@
 require_relative 'requireable.rb'
 
 class App
-  include Validator
+
   attr_reader :stations, :trains, :routes, :carriages
 
   def initialize
@@ -13,23 +13,18 @@ class App
 
   def create_station                             # создание станции
     puts "Enter station name"
-
-    station = Station.new(gets.chomp)
-    name_valid?(station)
-    stations << station
+    stations << Station.new(gets.chomp)
   end
 
   def create_train                               # создание поезда
     puts "Which type train"
     puts "1 - Passenger"
     puts "2 - Cargo"
-    type_train = gets.chomp.to_i
+    type_train = gets.chomp
 
     puts "Which number train"
     number_train = gets.chomp
-    train = train_types[type_train - 1].new(number_train)
-    number_valid?(train)
-    trains << train
+    trains << train_types[type_train - 1].new(number_train)
   end
 
   def create_route                               # создание маршрута
@@ -41,11 +36,12 @@ class App
 
     route = Route.new(first_station, last_station)
     routes.push(route)
-    name_valid?(route)
+
     puts "Route #{route.name} create"
   end
 
-  def add_station_route                        # добавление станции в маршрут
+
+  def add_station_route(route)                        # добавление станции в маршрут
     route = list_routes_for_remove_or_add
 
     puts "List of existing stations"
@@ -55,7 +51,7 @@ class App
     route.add_station(station_add)
   end
 
-  def remove_station_route               # удаления станции из машрута
+  def remove_station_route(route)               # удаления станции из машрута
     route = list_routes_for_remove_or_add
 
     puts "List of stations in the route"
@@ -87,34 +83,32 @@ class App
     puts "Which number carriage"
     number_carriage = gets.chomp
     if type_carriage == "1"
-      carriage = create_passenger_carriage(number_carriage)
-      number_valid?(carriage)
+        create_passenger_carriage(number_carriage)
     elsif type_carriage == "2"
-      carriage = create_cargo_carriage(number_carriage)
-      number_valid?(carriage)
+      create_cargo_carriage(number_carriage)
     end
   end
 
   def add_or_delete_carriage
     puts "Enter number edit train"
-    list_train
-    train_enter = train_search(gets.chomp.to_i)
+    train_enter = gets.chomp
+    train_enter = train_search(train_enter)
 
     puts "Add or disconnect?"
     puts "1 - Add"
     puts "2 - Disconnect"
     enter = gets.chomp
     if enter == "1"                              # добавление вагона к поезду
-      add_carriage(train_enter)
+      add_carriage
     elsif enter == "2"                          # отцепка вагона от поезда
-      delete_carriage(train_enter)
+      delete_carriage
     end
   end
 
   def move_train                                # движение поезда по станциям
     puts "Enter number train"
-    list_train
-    train_enter = train_search(gets.chomp.to_i)
+    train_enter = gets.chomp
+    train_enter = train_search(train_enter)
 
     puts "Wher are we going?"
     puts "1 - Forward"
@@ -188,7 +182,7 @@ class App
 
   def list_train
     trains.each.with_index(1) do |train, index|
-      puts "#{index}: #{train.number}"
+      puts "#{index}: #{train.name}"
     end
   end
 
@@ -221,15 +215,17 @@ class App
     carriages << number_carriage
   end
 
-  def add_carriage(train_enter)
+  def add_carriage
     puts "Which carriage to add?"
-    carriage_add = carriage_search(gets.chomp.to_i)
+    carriage_add = gets.chomp
+    carriage_add = carriage_search(carriage_add)
     train_enter.add_carriage(carriage_add)
   end
 
-  def delete_carriage(train_enter)
+  def delete_carriage
     puts "Which carriage to disconnect?"
-    carriage_delete = carriage_search(gets.chomp.to_i)
+    carriage_delete = gets.chomp
+    carriage_delete = carriage_search(carriage_delete)
     train_enter.delete_carriage(carriage_delete)
   end
 end

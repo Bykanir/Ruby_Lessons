@@ -1,5 +1,8 @@
-class Train
+require_relative 'validator.rb'
 
+class Train
+  include Validator
+  
   attr_accessor :speed, :index_current_station
   attr_reader :carriages, :route, :number
 
@@ -7,6 +10,7 @@ class Train
     @number = number
     @speed = 0
     @carriages = []
+    number_valid?(number)
   end
 
   def accept_route(route)       # метод добавление маршрута
