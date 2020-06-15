@@ -1,113 +1,92 @@
 # frozen_string_literal: true
 
-require_relative 'requireable.rb'
+require_relative 'requireable'
 
 class App
-  attr_reader :gamer, :dealer, :deck, :users
+  attr_reader :gamer, :dealer, :deck, :users, :exit
 
   def initialize
     @gamer = Gamer.new
     @dealer = Dealer.new
     @deck = Deck.new
     @users = [gamer, dealer]
-  end
-
-  def gamer_get_name
-    gamer.name?
-  end
-
-  def gamer_set_cards
-    print gamer.cards
-    puts
-  end
-
-  def gamer_set_points
-    puts gamer.points
-  end
-
-  def dealer_set_cards
-    dealer.hiding_cards
+    @exit = 0
   end
 
   def start_game
+    gamer.gamer_name
+
+    puts 'Give out cards'
+    distribution_cards
+    puts 'Your cards'
+    gamer_set_cards
+    puts 'Your points'
+    puts gamer.points
+    puts 'Dealer cards'
+    dealer.hiding_cards
+  end
+
+  def first_outcome_game
+    loop do
+      gamer_move
+      break if exit == 1
+
+      dealer.dealer_move
+    end
+  end
+
+  def second_outcome_game
+    loop do
+      dealer.dealer_move
+      gamer_move
+      break if exit == 1
+    end
+  end
+
+  def play_again
+    puts 'Want to play more?'
+    puts '1 - Play!'
+    puts "2 - That's enough!"
+  end
+
+  private
+
+  def gamer_set_cards
+    puts gamer.cards.to_s
+  end
+
+  def dealer_set_cards
+    print dealer.cards
+    puts
+  end
+
+  def distribution_cards
     users.each do |user|
       2.times { deck.get_card(user) }
     end
     users.each(&:score)
   end
 
-  def first_case
-    dealer_move
-
-    gamer_move_annotation_first
-    choice = gets.chomp.to_i
-    gamer_move_first_case(choice)
-
-    end_game
+  def gamer_move
+    gamer.move_annotation
+    gamer_action(gets.chomp.to_i)
   end
 
-  def gamer_move_annotation_first
-    annotation = ['You move!',
-                  'What are we doing?',
-                  '1 - Add card',
-                  '2 - Open cards']
-    annotation.each { |ann| puts ann }
-  end
-
-  def gamer_move_first_case(choice)
-    if choice == 1
+  def gamer_action(choice)
+    case choice
+    when 1
+      puts 'You pass'
+    when 2
       deck.get_card(gamer)
       puts 'Your cards'
       gamer_set_cards
-    elsif choice == 2
-      nil
-    end
-  end
-
-  def second_case
-    gamer_move_annotation_second
-    choice = gets.chomp.to_i
-    gamer_move_second_case(choice)
-
-    return end_game if choice == 3
-
-    dealer_move
-
-    end_game
-  end
-
-  def gamer_move_annotation_second
-    annotation = ['You move!',
-                  'What are we doing?',
-                  '1 - Skip move',
-                  '2 - Add card',
-                  '3 - Open cards']
-    annotation.each { |ann| puts ann }
-  end
-
-  def gamer_move_second_case(choice)
-    if choice == 1
-      puts 'Pass'
-    elsif choice == 2
-      deck.get_card(gamer)
-      puts 'Your cards'
-      gamer_set_cards
-    end
-  end
-
-  def dealer_move
-    puts 'Dealer move'
-    if dealer.points < 17
-      puts 'Dealer draws card'
-      deck.get_card(dealer)
-      puts 'Dealer cards'
-      dealer.hiding_cards
-    else
-      puts 'Dealer pass'
+    when 3
+      end_game
     end
   end
 
   def end_game
+    @exit = 1
     users.each(&:score)
     reveal_cards
 
@@ -116,8 +95,6 @@ class App
 
     winner
   end
-
-  private
 
   def winner
     if gamer.points > dealer.points
@@ -130,15 +107,14 @@ class App
   end
 
   def reveal_cards
-    annotation = ['Open all cards',
-                  'Your cards',
-                  gamer.cards,
-                  'Your points',
-                  gamer.points,
-                  'Dealer cards',
-                  dealer.cards,
-                  'Dealer points',
-                  dealer.points]
-    annotation.each { |ann| puts ann }
+    puts 'Open all cards'
+    puts 'Your cards'
+    gamer_set_cards
+    puts 'Your points'
+    puts gamer.points
+    puts 'Dealer cards'
+    dealer_set_cards
+    puts 'Dealer points'
+    puts dealer.points
   end
 end
