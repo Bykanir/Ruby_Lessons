@@ -8,9 +8,7 @@ class Deck
   attr_reader :points
 
   def initialize
-    @deck = CARDS.map do |card|
-      SUITS.collect { |suit| card + suit }
-    end.flatten
+    @deck = build_deck
   end
 
   def get_card(player)
@@ -23,5 +21,11 @@ class Deck
 
   def delete_card(card)
     deck.delete(card)
+  end
+
+  def build_deck
+    CARDS.map do |card|
+      SUITS.collect { |suit| card + suit }
+    end.flatten
   end
 end

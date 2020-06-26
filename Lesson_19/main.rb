@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
-require_relative 'app.rb'
+require_relative 'app'
 
 loop do
   app = App.new
-  puts 'Hello! Welcome to the game!'
+  puts 'Welcome to the game!'
   app.start_game
 
   random = rand(1..2)
 
-  if random == 1
-    app.first_outcome_game
-  elsif random == 2
-    app.second_outcome_game
-  end
+  app.game(random)
 
   app.play_again
   gets.chomp.to_i == 1 ? next : break

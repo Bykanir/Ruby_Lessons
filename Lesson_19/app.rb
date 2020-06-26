@@ -3,43 +3,38 @@
 require_relative 'requireable'
 
 class App
-  attr_reader :gamer, :dealer, :deck, :users, :exit
+  attr_reader :gamer, :dealer, :deck, :users, :loop_exit
 
   def initialize
     @gamer = Gamer.new
     @dealer = Dealer.new
     @deck = Deck.new
     @users = [gamer, dealer]
-    @exit = 0
+    @loop_exit = 0
   end
 
   def start_game
-    gamer.gamer_name
-
     puts 'Give out cards'
     distribution_cards
-    puts 'Your cards'
-    gamer_set_cards
-    puts 'Your points'
-    puts gamer.points
-    puts 'Dealer cards'
-    dealer.hiding_cards
+    show_player_cards(gamer)
+    dealer.hide_cards
   end
 
-  def first_outcome_game
-    loop do
-      gamer_move
-      break if exit == 1
+  def game(random)
+    case random
+    when 1
+      loop do
+        gamer_move
+        break if loop_exit == 1
 
-      dealer.dealer_move
-    end
-  end
-
-  def second_outcome_game
-    loop do
-      dealer.dealer_move
-      gamer_move
-      break if exit == 1
+        dealer.move(deck)
+      end
+    when 2
+      loop do
+        dealer.move(deck)
+        gamer_move
+        break if loop_exit == 1
+      end
     end
   end
 
@@ -51,13 +46,16 @@ class App
 
   private
 
-  def gamer_set_cards
-    puts gamer.cards.to_s
-  end
-
-  def dealer_set_cards
-    print dealer.cards
-    puts
+  def show_options
+    puts 'You move!'
+    puts 'What are we doing?'
+    puts '1 - Skip move'
+    if gamer.cards.size < 3
+      puts '2 - Add card'
+    else
+      puts 'Add card is not available'
+    end
+    puts '3 - Open cards'
   end
 
   def distribution_cards
@@ -68,7 +66,7 @@ class App
   end
 
   def gamer_move
-    gamer.move_annotation
+    show_options
     gamer_action(gets.chomp.to_i)
   end
 
@@ -78,15 +76,14 @@ class App
       puts 'You pass'
     when 2
       deck.get_card(gamer)
-      puts 'Your cards'
-      gamer_set_cards
+      show_player_cards(gamer)
     when 3
       end_game
     end
   end
 
   def end_game
-    @exit = 1
+    @loop_exit = 1
     users.each(&:score)
     reveal_cards
 
@@ -108,13 +105,13 @@ class App
 
   def reveal_cards
     puts 'Open all cards'
-    puts 'Your cards'
-    gamer_set_cards
-    puts 'Your points'
-    puts gamer.points
-    puts 'Dealer cards'
-    dealer_set_cards
-    puts 'Dealer points'
-    puts dealer.points
+    show_player_cards(gamer)
+    show_player_cards(dealer)
+  end
+
+  def show_player_cards(player)
+    puts player.name.to_s
+    puts "Cards: #{player.cards}"
+    puts "Points: #{player.points}"
   end
 end
