@@ -3,14 +3,14 @@
 require_relative 'requireable'
 
 class App
-  attr_reader :gamer, :dealer, :deck, :users, :loop_exit
+  attr_reader :gamer, :dealer, :deck, :users, :exit
 
   def initialize
     @gamer = Gamer.new
     @dealer = Dealer.new
     @deck = Deck.new
     @users = [gamer, dealer]
-    @loop_exit = 0
+    @exit = 0
   end
 
   def start_game
@@ -23,18 +23,9 @@ class App
   def game(random)
     case random
     when 1
-      loop do
-        gamer_move
-        break if loop_exit == 1
-
-        dealer.move(deck)
-      end
+      game_random_one
     when 2
-      loop do
-        dealer.move(deck)
-        gamer_move
-        break if loop_exit == 1
-      end
+      game_random_two
     end
   end
 
@@ -45,6 +36,23 @@ class App
   end
 
   private
+
+  def game_random_one
+    loop do
+      gamer_move
+      break if exit == 1
+
+      dealer.move(deck)
+    end
+  end
+
+  def game_random_two
+    loop do
+      dealer.move(deck)
+      gamer_move
+      break if exit == 1
+    end
+  end
 
   def show_options
     puts 'You move!'
@@ -83,7 +91,7 @@ class App
   end
 
   def end_game
-    @loop_exit = 1
+    @exit = 1
     users.each(&:score)
     reveal_cards
 

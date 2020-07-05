@@ -7,8 +7,6 @@ class Gamer < Player
 
   def initialize
     super
-    puts 'Hello! What is you name?'
-    name = gets.chomp
-    @name = name
+    @name = gets.chomp
   end
 end

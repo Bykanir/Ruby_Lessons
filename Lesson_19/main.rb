@@ -3,6 +3,7 @@
 require_relative 'app'
 
 loop do
+  puts 'Hello! What is you name?'
   app = App.new
   puts 'Welcome to the game!'
   app.start_game
