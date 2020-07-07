@@ -7,6 +7,6 @@ class Carriage
 
   def initialize(number)
     @number = number
-    number_valid?(number)
+    validate_number(number)
   end
 end

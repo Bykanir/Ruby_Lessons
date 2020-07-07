@@ -10,7 +10,7 @@ class Route
     @first_station = first_station
     @last_station = last_station
     @stations = [first_station, last_station]
-    name_valid?(name)
+    validate_route(first_station, last_station)
   end
 
   def add_station(station)      # добавление промежуточные станции в маршрут

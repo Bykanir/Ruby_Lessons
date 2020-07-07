@@ -1,19 +1,29 @@
 module Validator
-  def number_valid?(number)
-    number_error if number.empty?
+  
+  def validate_route(first_station, last_station)
+    station_error if first_station.empty?
+    station_error if last_station.empty?
   end
 
-  def name_valid?(name)
+  def validate_name(name)
     name_error if name.empty?
+  end
+
+  def validate_number(number)
+    number_error if number.empty?
   end
 
   private
 
   def name_error
-    raise "Name is missing"
+    raise 'Name is missing'
   end
 
   def number_error
-    raise "Number is missing"
+    raise 'Number is missing'
+  end
+
+  def station_error
+    raise 'Station is missing in route'
   end
 end

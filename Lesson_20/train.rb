@@ -10,7 +10,7 @@ class Train
     @number = number
     @speed = 0
     @carriages = []
-    number_valid?(number)
+    validate_number(number)
   end
 
   def accept_route(route)       # метод добавление маршрута

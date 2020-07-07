@@ -8,7 +8,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
-    name_valid?(name)
+    validate_name(name)
   end
 
   def add_train(train)     # добавление поездов на станцию
