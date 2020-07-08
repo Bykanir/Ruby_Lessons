@@ -1,8 +1,6 @@
 module Validator
-  
   def validate_route(first_station, last_station)
-    station_error if first_station.empty?
-    station_error if last_station.empty?
+    [first_station, last_station].each { |station| station_error if station.empty? }
   end
 
   def validate_name(name)
