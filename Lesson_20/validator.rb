@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Validator
   def validate_route(first_station, last_station)
     [first_station, last_station].each { |station| station_error if station.empty? }

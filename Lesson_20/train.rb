@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require_relative 'validator.rb'
 
 class Train
   include Validator
-  
+
   attr_accessor :speed, :index_current_station
   attr_reader :carriages, :route, :number
 
@@ -13,17 +15,17 @@ class Train
     validate_number(number)
   end
 
-  def accept_route(route)       # метод добавление маршрута
-    @route = route      # добавление маршрута
-    @index_current_station = 0   # постановка этого поезда на первую станцию
-    route.stations[index_current_station].add_train(self) # добавление этого поезда в список поездов станции
+  def accept_route(route)
+    @route = route
+    @index_current_station = 0
+    route.stations[index_current_station].add_train(self)
   end
 
-  def move_forward      # отправление на следующую станцию маршрута
+  def move_forward
     move(next_station)
   end
 
-  def move_backward     # отправление на предыдущую станцию маршрута
+  def move_backward
     move(previous_station)
   end
 
@@ -35,18 +37,18 @@ class Train
     index_current_station - 1
   end
 
-  def add_carriage(carriage)    # добавление вагона
+  def add_carriage(carriage)
     carriages << carriage
   end
 
-  def delete_carriage(carriage)       # удаление вагона
+  def delete_carriage(carriage)
     carriages.delete(carriage)
   end
 
   private
 
-  def move(index_station)             # приватный метод перемещения поезда
-    self.route.stations[index_current_station].send_train(self)
+  def move(index_station)
+    route.stations[index_current_station].send_train(self)
     self.index_current_station = index_station
     route.stations[index_current_station].add_train(self)
   end

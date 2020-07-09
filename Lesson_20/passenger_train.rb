@@ -1,5 +1,6 @@
-class PassengerTrain < Train
+# frozen_string_literal: true
 
+class PassengerTrain < Train
   def add_carriage(carriage)
     super if carriage.is_a?(PassengerCarriage)
   end

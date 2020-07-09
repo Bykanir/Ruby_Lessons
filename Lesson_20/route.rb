@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require_relative 'validator.rb'
 
 class Route
   include Validator
-  
-  attr_reader :stations, :first_station, :last_station, :name     # геттер списка станций
+
+  attr_reader :stations, :first_station, :last_station, :name
 
   def initialize(first_station, last_station)
     @name = "#{first_station.name} - #{last_station.name}"
@@ -13,11 +15,11 @@ class Route
     validate_route(first_station, last_station)
   end
 
-  def add_station(station)      # добавление промежуточные станции в маршрут
+  def add_station(station)
     stations.insert(1, station)
   end
 
-  def delete_station(station)     # удаление промежуточной станции
+  def delete_station(station)
     stations.delete(station) if station != first_station && station != last_station
   end
 end

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require_relative 'validator.rb'
 
 class Station
   include Validator
-  
-  attr_reader :trains, :name     # геттер списка поездов
+
+  attr_reader :trains, :name
 
   def initialize(name)
     @name = name
@@ -11,11 +13,11 @@ class Station
     validate_name(name)
   end
 
-  def add_train(train)     # добавление поездов на станцию
+  def add_train(train)
     trains << train
   end
 
-  def send_train(train)     # отправление поездов
+  def send_train(train)
     trains.delete(train)
   end
 end
